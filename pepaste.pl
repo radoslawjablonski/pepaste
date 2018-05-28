@@ -1,10 +1,9 @@
 #! /usr/bin/perl -w
 
-use strict;
 use 5.14.0; # for 'say'
-
+use strict;
 use Getopt::Long qw(:config bundling); # for case sensitive
-#todo help finction
+
 my %params = ('num-words' => 2,
 			  'split-delim' => ' ',
 			  'match-word-regex' => '',
@@ -23,7 +22,7 @@ GetOptions('num-words|n=i' => \$params{'num-words'},
 	   )
 	or die 'Invalid parameters';
 
-#TODO: help info
+#TODO: help info param msg
 
 sub say_d {
 	# printing all params if debug is enabled
@@ -34,11 +33,13 @@ sub say_d {
 
 # $regex, $type ('m'/'s')
 sub validate_regex {
+	die "Wrong number of arguments: ".@_ if @_ != 2;
+
 	my $regex = shift;
 	my $type = shift;
 
 	my $valid_fail = 0;
-	
+
 	if ($type eq "m") {
 		if ($regex =~ /(^\/{1}.*?\/{1})(.*$)/ ) {
 			# catching first /a/ and checking if something
@@ -69,8 +70,10 @@ say_d "End line prefix: $params{'end-line-prefix'}";
 {
 	# use for tracking if newline is needed on end of the program
 	my $was_flushed = 1;
-	
+
 	sub print_word {
+		die "Wrong number of arguments: ".@_ if @_ != 3;
+
 		my $word = shift;
 		my $max_n_words = shift;
 		my $word_counter = shift;
@@ -80,9 +83,9 @@ say_d "End line prefix: $params{'end-line-prefix'}";
 			# line, we have to add delimiter char before
 			print $params{'output-word-separator'};
 		}
-		
+
 		print $word;
-		
+
 		if ($word_counter % $max_n_words == 0) {
 			# printing end of line
 			print "$params{'end-line-prefix'}\n";
@@ -122,7 +125,7 @@ while (my $line = <>) {
 		}
 
 		print_word($word, $params{'num-words'}, $wcount);
-	
+
 		$wcount++;
 	}
 }

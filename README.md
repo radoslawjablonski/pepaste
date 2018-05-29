@@ -2,7 +2,7 @@
 Perl-based tool for advanced parsing of data on the fly. It can be used for parsing files but it also can handle data from pipe stream.
 
 ## Usage:
-**pepaste [-vh ] [ --num-words|-n NUM ] [ --split-delim|-d ' ' ] [ --match-word|-m '/match/' ] [ --match-line-regex|-M '/match/' ] [ --end-line-prefix|-e '' ] [ --output-word-separator|-w ' ' ] input_file**
+pepaste [-vh ] [ --num-words|-n NUM ] [ --split-delim|-d ' ' ] [ --match-word|-m '/match/' ] [ --match-line-regex|-M '/match/' ] [ --end-line-prefix|-e '' ] [ --output-word-separator|-w ' ' ] input_file
 
 
 ## Examples:

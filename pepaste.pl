@@ -8,7 +8,7 @@ use Pod::Usage qw(pod2usage);;
 my %params = ('num-words' => 2,
 			  'split-delim' => ' ',
 			  'match-word-regex' => '',
-			  'match-line-regex' => '',
+			  'exclude-word-regex' => '',
 			  'verbose' => 0,
 			  'end-line-prefix' => '',
 			  'output-word-separator' => ' ',
@@ -16,8 +16,8 @@ my %params = ('num-words' => 2,
 
 GetOptions('num-words|n=i' => \$params{'num-words'},
 		   'split-delim|d=s' => \$params{'split-delim'},
-		   'match-word|m=s' =>  \$params{'match-word-regex'},
-		   'match-line-regex|M=s' => \$params{'match-line-regex'},
+		   'match-word-regex|m=s' =>  \$params{'match-word-regex'},
+		   'exclude-word-regex|M=s' => \$params{'exclude-word-regex'},
 		   'verbose|v' => \$params{'verbose'},
 		   'end-line-prefix|e=s' => \$params{'end-line-prefix'},
 		   'output-word-separator|o=s' => \$params{'output-word-separator'},
@@ -129,24 +129,25 @@ pod2usage(0) if $params{'help'};
 
 say_d 'Using column size: '.$params{'num-words'};
 say_d 'Using word regex: '.$params{'match-word-regex'};
-say_d 'Using line regex: '.$params{'match-line-regex'};
+say_d 'Using exclude word regex: '.$params{'exclude-word-regex'};
 say_d "End line prefix: $params{'end-line-prefix'}";
 
 my $wcount = 1; # word counter
 while (my $line = <>) {
 	chomp($line);
 
-	if ($params{'match-line-regex'} ne '') {
-		# print 'Using line regex: ', $params{'R'};
-		#TODO implement
-		...
-	}
-
 	foreach my $word (split($params{'split-delim'}, $line)) {
-		# skipping for match-word-regex if didn't matched
+		# skipping if word does NOT match-word-regex
 		if ($params{'match-word-regex'} &&
 				!check_match($word, $params{'match-word-regex'})) {
 			say_d "Skipping $word because of match-word-regex";
+			next;
+		}
+
+		# skipping if word matches exclude-word-regex
+		if ($params{'exclude-word-regex'} &&
+				check_match($word, $params{'exclude-word-regex'})) {
+			say_d "Skipping $word because of exclude-word-regex";
 			next;
 		}
 
@@ -164,8 +165,8 @@ flush_if_needed;
 
 $ pepaste [-vh ] [ --num-words|-n NUM ]
 [ --split-delim|-d ' ' ]
-[ --match-word|-m '/match/' ]
-[ --match-line-regex|-M '/match/' ]
+[ --match-word-regex|-m '/match/' ]
+[ --exclude-word-regex|-M '/negative_match/']
 [ --end-line-prefix|-e '' ]
 [ --output-word-separator|-w ' ' ]
 input_file
@@ -182,25 +183,33 @@ number of words per line that will be generated in output stream.
 
 delimiter of words in line in INPUT stream - used when each input line consists of more than one field
 
-=item B<--match-word '/match/'> or B<-m '/match/'>
+=item B<--match-word-regex '/match/'> or B<-m '/match/'>
 
 print only WORDS that matching given regex e.g.: -m '/a/' will print only words containing 'a' and rest will be filtered out
 
-=item B<--match-line-regex '/match/'> or B<-M '/match/'>
+=item B<--exclude-word '/negative_match/'> or B<-M '/negative_match/'>
 
-print only LINES that matching given regex e.g.: -m '/^a/' will print only lines starting with 'a' and rest of the input lines be filtered out
+Reversed version of -m parameter - skip words if match exists
 
 =item B<--end-line-prefix ''> or B<-e ''>
 
 set separator that is printed on end of every line just before newline marker.e.g: -e '\' will result in:
-a,b,c\
-d,e,f
+
+=item a,b,c\
+
+=item d,e,f
+
+=item
 
 =item B<--output-word-separator ' '> or B<-w ' '>
-
+-
 set separator that is used after every printed word. At default one whitespace is used (' '). e.g: -o ',' will result in:
-a,b,c
-d,e,f
+
+=item a,b,c
+
+=item d,e,f
+
+=item
 
 =item B<--verbose> or B<-v>
 

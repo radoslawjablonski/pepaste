@@ -26,8 +26,7 @@ GetOptions('num-words|n=i' => \$params{'num-words'},
 	or pod2usage(-verbose => 0);
 ;
 
-## help info
-
+# TODO: handle last \ in line
 
 sub say_d {
 	# printing all params if debug is enabled
@@ -67,15 +66,6 @@ sub validate_regex {
 	say_d "Regex $regex validation ok";
 }
 
-
-### START ####
-pod2usage(0) if $params{'help'};
-
-say_d 'Using column size: '.$params{'num-words'};
-say_d 'Using word regex: '.$params{'match-word-regex'};
-say_d 'Using line regex: '.$params{'match-line-regex'};
-say_d "End line prefix: $params{'end-line-prefix'}";
-
 {
 	# use for tracking if newline is needed on end of the program
 	my $was_flushed = 1;
@@ -111,6 +101,37 @@ say_d "End line prefix: $params{'end-line-prefix'}";
 	}
 }
 
+## $str, $regex
+sub check_match {
+	die "Wrong number of arguments: ".@_ if @_ != 2;
+
+	my $str = shift;
+	my $regex = shift;
+
+	if ($str eq '') {
+		say_d "Skipping match for string $str because regex empty with 0 exit..";
+		return 0;
+	}
+
+	validate_regex($regex, "m");
+	# Applying word regex if passed as a param
+	my $wquery = "qr$regex";
+
+	if ($str =~ eval($wquery)) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+### START ####
+pod2usage(0) if $params{'help'};
+
+say_d 'Using column size: '.$params{'num-words'};
+say_d 'Using word regex: '.$params{'match-word-regex'};
+say_d 'Using line regex: '.$params{'match-line-regex'};
+say_d "End line prefix: $params{'end-line-prefix'}";
+
 my $wcount = 1; # word counter
 while (my $line = <>) {
 	chomp($line);
@@ -122,15 +143,11 @@ while (my $line = <>) {
 	}
 
 	foreach my $word (split($params{'split-delim'}, $line)) {
-		if ($params{'match-word-regex'} ne '') {
-			validate_regex($params{'match-word-regex'}, "m");
-			# Applying word regex if passed as a param
-			my $wquery = "qr$params{'match-word-regex'}";
-
-			if ($word !~ eval($wquery)) {
-				say_d "<omit $word>";
-				next;
-			}
+		# skipping for match-word-regex if didn't matched
+		if ($params{'match-word-regex'} &&
+				!check_match($word, $params{'match-word-regex'})) {
+			say_d "Skipping $word because of match-word-regex";
+			next;
 		}
 
 		print_word($word, $params{'num-words'}, $wcount);

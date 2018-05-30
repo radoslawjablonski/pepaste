@@ -12,6 +12,7 @@ my %params = ('num-words' => 2,
 			  'verbose' => 0,
 			  'end-line-prefix' => '',
 			  'output-word-separator' => ' ',
+			  'columns-selected' => '',
 			  'help' => 0);
 
 GetOptions('num-words|n=i' => \$params{'num-words'},
@@ -21,6 +22,7 @@ GetOptions('num-words|n=i' => \$params{'num-words'},
 		   'verbose|v' => \$params{'verbose'},
 		   'end-line-prefix|e=s' => \$params{'end-line-prefix'},
 		   'output-word-separator|o=s' => \$params{'output-word-separator'},
+		   'columns-selected|c=s' => \$params{'columns-selected'},
 		   'help|h' => \$params{'help'}
 	   )
 	or pod2usage(-verbose => 0);
@@ -132,11 +134,19 @@ say_d 'Using word regex: '.$params{'match-word-regex'};
 say_d 'Using exclude word regex: '.$params{'exclude-word-regex'};
 say_d "End line prefix: $params{'end-line-prefix'}";
 
+
 my $wcount = 1; # word counter
 while (my $line = <STDIN>) {
 	chomp($line);
 
-	foreach my $word (split($params{'split-delim'}, $line)) {
+	# splitting each line into separateonly words
+	my @words_in_line = split($params{'split-delim'}, $line);
+
+	# yeah, I know it would be better to use it directly in foreach
+	# fashion but not if I want to have indexes of particular column
+	for my $col_idx (0 .. $#words_in_line ) {
+		my $word = $words_in_line[$col_idx];
+
 		# skipping if word does NOT match-word-regex
 		if ($params{'match-word-regex'} &&
 				!check_match($word, $params{'match-word-regex'})) {

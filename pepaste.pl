@@ -133,7 +133,7 @@ say_d 'Using exclude word regex: '.$params{'exclude-word-regex'};
 say_d "End line prefix: $params{'end-line-prefix'}";
 
 my $wcount = 1; # word counter
-while (my $line = <>) {
+while (my $line = <STDIN>) {
 	chomp($line);
 
 	foreach my $word (split($params{'split-delim'}, $line)) {
@@ -163,13 +163,12 @@ flush_if_needed;
 
 =head1 SYNOPSIS
 
-$ pepaste [-vh ] [ --num-words|-n NUM ]
+$ <INPUT_STREAM>|pepaste [-vh ] [ --num-words|-n NUM ]
 [ --split-delim|-d ' ' ]
 [ --match-word-regex|-m '/match/' ]
 [ --exclude-word-regex|-M '/negative_match/']
 [ --end-line-prefix|-e '' ]
 [ --output-word-separator|-w ' ' ]
-input_file
 
 =head1 OPTIONS
 

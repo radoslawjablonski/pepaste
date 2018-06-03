@@ -169,6 +169,14 @@ while (my $line = <STDIN>) {
 	# yeah, I know it would be better to use it directly in foreach
 	# fashion but not if I want to have indexes of particular column
 	for my $col_idx (@columns_idx_arr) {
+		# It may occur that user will pass columns that not always will be
+		# available. If we won't do nothing, then output will be messed with
+		# not very meaningfull errors
+		if ($col_idx > $#words_in_line) {
+			say_d "In line <$line> caught out of bounds index ".($col_idx + 1).
+				" Moving on...";
+			next;
+		}
 		my $word = $words_in_line[$col_idx];
 
 		# skipping if word does NOT match-word-regex

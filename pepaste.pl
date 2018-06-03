@@ -126,7 +126,18 @@ sub check_match {
 	}
 }
 
-### START ####
+sub validate_columns_str {
+	my $columns_str = shift;
+
+	# we are looking for digit number that is at the end of series
+	# 'digit,' (digit colon) sequence
+	if ($columns_str !~ /^(\d+\,)*(\d+)+$/) {
+		die "Wrong columns array passed: '".$columns_str."'";
+	}
+
+}
+
+### Start ####
 pod2usage(0) if $params{'help'};
 
 say_d 'Using column size: '.$params{'num-words'};
@@ -139,12 +150,21 @@ my $wcount = 1; # word counter
 while (my $line = <STDIN>) {
 	chomp($line);
 
-	# splitting each line into separateonly words
 	my @words_in_line = split($params{'split-delim'}, $line);
+	my @columns_idx_arr;
+	# if user has given columns, then using it now..
+	if ($params{'columns-selected'}) {
+		# TODO: validate!
+		validate_columns_str($params{'columns-selected'});
+		@columns_idx_arr = split(',', $params{'columns-selected'});
+	} else {
+		# traditional approach, all columns will be visible
+		@columns_idx_arr = (0 .. $#words_in_line);
+	}
 
 	# yeah, I know it would be better to use it directly in foreach
 	# fashion but not if I want to have indexes of particular column
-	for my $col_idx (0 .. $#words_in_line ) {
+	for my $col_idx (@columns_idx_arr) {
 		my $word = $words_in_line[$col_idx];
 
 		# skipping if word does NOT match-word-regex

@@ -21,7 +21,7 @@ GetOptions('num-words|n=i' => \$params{'num-words'},
 		   'exclude-word-regex|M=s' => \$params{'exclude-word-regex'},
 		   'verbose|v' => \$params{'verbose'},
 		   'end-line-prefix|e=s' => \$params{'end-line-prefix'},
-		   'output-word-separator|o=s' => \$params{'output-word-separator'},
+		   'output-word-separator|w=s' => \$params{'output-word-separator'},
 		   'columns-selected|c=s' => \$params{'columns-selected'},
 		   'help|h' => \$params{'help'}
 	   )
@@ -157,6 +157,10 @@ while (my $line = <STDIN>) {
 		# TODO: validate!
 		validate_columns_str($params{'columns-selected'});
 		@columns_idx_arr = split(',', $params{'columns-selected'});
+
+		# substracting '1' from all indexes to make columns selection
+		# more user friendly - user will pass columns starting with '1'
+		$_-- foreach @columns_idx_arr;
 	} else {
 		# traditional approach, all columns will be visible
 		@columns_idx_arr = (0 .. $#words_in_line);
@@ -194,6 +198,7 @@ flush_if_needed;
 =head1 SYNOPSIS
 
 $ <INPUT_STREAM>|pepaste [-vh ] [ --num-words|-n NUM ]
+[ --columns-selected|-c ]
 [ --split-delim|-d ' ' ]
 [ --match-word-regex|-m '/match/' ]
 [ --exclude-word-regex|-M '/negative_match/']
@@ -203,6 +208,19 @@ $ <INPUT_STREAM>|pepaste [-vh ] [ --num-words|-n NUM ]
 =head1 OPTIONS
 
 =over 8
+
+=item B<--columns-selected '1,2 .. N'> or B<-c '1,2..N'>
+
+string representing list of columns from input stream that will be displayed, rest
+of the content will be ignored
+
+=over
+
+=item dpkg -l|pepaste -c "1,2"
+
+=back
+
+will display only content from column '1' and '2'
 
 =item B<--num-words N> or B<-n N>
 

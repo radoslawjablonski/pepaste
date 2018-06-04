@@ -130,8 +130,9 @@ sub validate_columns_str {
 	my $columns_str = shift;
 
 	# we are looking for digit number that is at the end of series
-	# 'digit,' (digit colon) sequence
-	if ($columns_str !~ /^(\d+\,)*(\d+)+$/) {
+	# 'digit,' (digit colon) sequence. Whitespace after colon are also
+	# acceptable
+	if ($columns_str !~ /^(\d+\,\s?)*(\d+)+$/) {
 		die "Wrong columns array passed: '".$columns_str."'";
 	}
 

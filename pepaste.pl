@@ -4,6 +4,7 @@ use 5.14.0; # for 'say'
 use strict;
 use Getopt::Long qw(:config bundling); # for case sensitive
 use Pod::Usage qw(pod2usage);;
+use Carp; # for croak()
 
 my %params = ('num-words' => 2,
 			  'split-delim' => ' ',
@@ -39,7 +40,7 @@ sub say_d {
 
 # $regex, $type ('m'/'s')
 sub validate_regex {
-	die "Wrong number of arguments: ".@_ if @_ != 2;
+	croak "Wrong number of arguments: ".@_ if @_ != 2;
 
 	my $regex = shift;
 	my $type = shift;
@@ -73,7 +74,7 @@ sub validate_regex {
 	my $was_flushed = 1;
 
 	sub print_word {
-		die "Wrong number of arguments: ".@_ if @_ != 3;
+		croak "Wrong number of arguments: ".@_ if @_ != 3;
 
 		my $word = shift;
 		my $max_n_words = shift;
@@ -105,7 +106,7 @@ sub validate_regex {
 
 ## $str, $regex
 sub check_match {
-	die "Wrong number of arguments: ".@_ if @_ != 2;
+	croak("Wrong number of arguments: ".@_) if @_ != 2; #TODO: croak
 
 	my $str = shift;
 	my $regex = shift;
@@ -145,7 +146,6 @@ say_d 'Using column size: '.$params{'num-words'};
 say_d 'Using word regex: '.$params{'match-word-regex'};
 say_d 'Using exclude word regex: '.$params{'exclude-word-regex'};
 say_d "End line prefix: $params{'end-line-prefix'}";
-
 
 my $wcount = 1; # word counter
 while (my $line = <STDIN>) {

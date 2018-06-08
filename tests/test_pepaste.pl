@@ -51,11 +51,20 @@ cc
 ";
 three_words_all_modes_test("", $expected);
 
+# Three words in line, only end-line string passed
+my $expected = "aa\\
+bb\\
+cc\\
+";
+three_words_all_modes_test("-e '\\'", $expected);
+
+
 # Three words in line, n=2
 $expected = "aa bb
 cc
 ";
 three_words_all_modes_test("-n 2", $expected);
+
 
 # Empty inputs tests, nothing should be generated
 $expected = "";

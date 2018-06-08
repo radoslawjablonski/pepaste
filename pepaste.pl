@@ -6,7 +6,7 @@ use Getopt::Long qw(:config bundling); # for case sensitive
 use Pod::Usage qw(pod2usage);;
 use Carp; # for croak()
 
-my %params = ('num-words' => 2,
+my %params = ('num-words' => 1,
 			  'split-delim' => ' ',
 			  'match-word-regex' => '',
 			  'exclude-word-regex' => '',

@@ -44,26 +44,64 @@ sub empty_input_test {
 	basic_test("/bin/echo", $pepaste_params, $expected_str, "Empty input");
 }
 
+my $expected;
+
 # Three words in line, no params (default n=1)
-my $expected = "aa
+$expected = "aa
 bb
 cc
 ";
 three_words_all_modes_test("", $expected);
 
 # Three words in line, only end-line string passed
-my $expected = "aa\\
+$expected = "aa\\
 bb\\
 cc\\
 ";
 three_words_all_modes_test("-e '\\'", $expected);
-
 
 # Three words in line, n=2
 $expected = "aa bb
 cc
 ";
 three_words_all_modes_test("-n 2", $expected);
+
+# Three words in line, n=2 -e 'XxX'
+$expected = "aa bbXxX
+ccXxX
+";
+three_words_all_modes_test("-n 2 -e XxX", $expected);
+
+# Three words in line, n=4
+$expected = "aa bb cc
+";
+three_words_all_modes_test("-n 4", $expected);
+
+# Three words in line, n=4 -e ' |'
+$expected = "aa bb cc |
+";
+three_words_all_modes_test("-n 4 -e ' |'", $expected);
+
+### Matcher tests ###
+# Three words in line, n=2 -m '/^a/'
+$expected = "aa
+";
+three_words_all_modes_test("-n 2 -m '/^a/'", $expected);
+
+# Three words in line, n=2 -m '/something_not_possible/' (always no-match)
+$expected = "";
+three_words_all_modes_test("-n 2 -m '/something_not_possible/'", $expected);
+
+# Three words in line, n=2 negative matcher
+$expected = "bb cc
+";
+three_words_all_modes_test("-n 2 -M '/^a/'", $expected);
+
+# Three words in line, n=2 negative dummy matcher
+$expected = "aa bb
+cc
+";
+three_words_all_modes_test("-n 2 -M '/^something_that_wont_be_matched/'", $expected);
 
 
 # Empty inputs tests, nothing should be generated

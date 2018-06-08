@@ -22,14 +22,12 @@ GetOptions('num-words|n=i' => \$params{'num-words'},
 		   'exclude-word-regex|M=s' => \$params{'exclude-word-regex'},
 		   'verbose|v' => \$params{'verbose'},
 		   'end-line-string|e=s' => \$params{'end-line-string'},
-		   'output-word-separator|w=s' => \$params{'output-word-separator'},
+		   'output-word-separator|s=s' => \$params{'output-word-separator'},
 		   'columns-selected|c=s' => \$params{'columns-selected'},
 		   'help|h' => \$params{'help'}
 	   )
 	or pod2usage(-verbose => 0);
 ;
-
-# TODO: handle last \ in line
 
 sub say_d {
 	# printing all params if debug is enabled
@@ -234,6 +232,18 @@ will display only content from column '1' and '2'
 =item B<--num-words N> or B<-n N>
 
 number of words per line that will be generated in output stream.
+
+=item B<--output-word-separator ' '> or B<-s ' '>
+char or string that separates words in line in output stream
+
+=over
+
+=item echo aa bb cc|pepaste -s , -n 3
+
+=back
+
+will display as a result:
+"aa,bb,cc"
 
 =item B<--split-delim ' '> or B<-d ' '>
 

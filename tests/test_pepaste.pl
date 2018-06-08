@@ -1,14 +1,24 @@
 #! /usr/bin/perl -w
 
+use strict;
+
 use Test::More;
 
-sub three_words_in_line_test {
-	my $cmd_params = shift;
+sub basic_test {
+	my $data_gen_cmd = shift;
+	my $pepaste_params = shift;
 	my $expected_str = shift;
 
-	my $output = `echo aa bb cc|../pepaste $cmd_params`;
+	my $output = `$data_gen_cmd|../pepaste $pepaste_params`;
 
-	cmp_ok ($output, "eq", $expected_str, "Three words in one line, params: ".$cmd_params);
+	cmp_ok ($output, "eq", $expected_str, "Three words in one line, params: ".$pepaste_params);
+}
+
+sub three_words_in_line_test {
+	my $pepaste_params = shift;
+	my $expected_str = shift;
+
+	basic_test("echo aa bb cc", $pepaste_params, $expected_str);
 }
 
 # Three words in line, no params (default n=1)

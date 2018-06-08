@@ -11,7 +11,7 @@ my %params = ('num-words' => 1,
 			  'match-word-regex' => '',
 			  'exclude-word-regex' => '',
 			  'verbose' => 0,
-			  'end-line-prefix' => '',
+			  'end-line-string' => '',
 			  'output-word-separator' => ' ',
 			  'columns-selected' => '',
 			  'help' => 0);
@@ -21,7 +21,7 @@ GetOptions('num-words|n=i' => \$params{'num-words'},
 		   'match-word-regex|m=s' =>  \$params{'match-word-regex'},
 		   'exclude-word-regex|M=s' => \$params{'exclude-word-regex'},
 		   'verbose|v' => \$params{'verbose'},
-		   'end-line-prefix|e=s' => \$params{'end-line-prefix'},
+		   'end-line-string|e=s' => \$params{'end-line-string'},
 		   'output-word-separator|w=s' => \$params{'output-word-separator'},
 		   'columns-selected|c=s' => \$params{'columns-selected'},
 		   'help|h' => \$params{'help'}
@@ -90,7 +90,7 @@ sub validate_regex {
 
 		if ($word_counter % $max_n_words == 0) {
 			# printing end of line
-			print "$params{'end-line-prefix'}\n";
+			print "$params{'end-line-string'}\n";
 			$was_flushed = 1;
 		} else {
 			$was_flushed = 0;
@@ -99,14 +99,14 @@ sub validate_regex {
 
 	sub flush_if_needed {
 		if (!$was_flushed) {
-			print "\n";
+			print "$params{'end-line-string'}\n";
 		}
 	}
 }
 
 ## $str, $regex
 sub check_match {
-	croak("Wrong number of arguments: ".@_) if @_ != 2; #TODO: croak
+	croak("Wrong number of arguments: ".@_) if @_ != 2;
 
 	my $str = shift;
 	my $regex = shift;
@@ -145,7 +145,7 @@ pod2usage(0) if $params{'help'};
 say_d 'Using column size: '.$params{'num-words'};
 say_d 'Using word regex: '.$params{'match-word-regex'};
 say_d 'Using exclude word regex: '.$params{'exclude-word-regex'};
-say_d "End line prefix: $params{'end-line-prefix'}";
+say_d "End line string: $params{'end-line-string'}";
 
 my $wcount = 1; # word counter
 while (my $line = <STDIN>) {
@@ -211,7 +211,7 @@ $ <INPUT_STREAM>|pepaste [-vh ] [ --num-words|-n NUM ]
 [ --split-delim|-d ' ' ]
 [ --match-word-regex|-m '/match/' ]
 [ --exclude-word-regex|-M '/negative_match/']
-[ --end-line-prefix|-e '' ]
+[ --end-line-string|-e '' ]
 [ --output-word-separator|-w ' ' ]
 
 =head1 OPTIONS
@@ -247,13 +247,13 @@ print only WORDS that matching given regex e.g.: -m '/a/' will print only words 
 
 Reversed version of -m parameter - skip words if match exists
 
-=item B<--end-line-prefix ''> or B<-e ''>
+=item B<--end-line-string ''> or B<-e ''>
 
-set separator that is printed on end of every line just before newline marker.e.g: -e '\' will result in:
+set string that is additionally printed on end of every line, just before newline marker.e.g: -e '\' will result in:
 
 =item a,b,c\
 
-=item d,e,f
+=item d,e,f\
 
 =item
 

@@ -36,37 +36,6 @@ sub say_d {
 	}
 }
 
-# $regex, $type ('m'/'s')
-sub validate_regex {
-	croak "Wrong number of arguments: ".@_ if @_ != 2;
-
-	my $regex = shift;
-	my $type = shift;
-
-	my $valid_fail = 0;
-
-	if ($type eq "m") {
-		if ($regex =~ /(^\/{1}.*?\/{1})(.*$)/ ) {
-			# catching first /a/ and checking if something
-			# else exist in case of //////
-			if ($2) {
-				$valid_fail = 1;
-			}
-		} else {
-			# bad regex at all
-			$valid_fail = 1;
-		}
-	} else {
-		die "Bad regex type: $type";
-	}
-
-	if ($valid_fail) {
-		die "Bad regex: $regex"
-	}
-
-	say_d "Regex $regex validation ok";
-}
-
 {
 	# use for tracking if newline is needed on end of the program
 	my $was_flushed = 1;
@@ -114,11 +83,8 @@ sub check_match {
 		return 0;
 	}
 
-	validate_regex($regex, "m");
 	# Applying word regex if passed as a param
-	my $wquery = "qr$regex";
-
-	if ($str =~ eval($wquery)) {
+	if ($str =~ m/$regex/) {
 		return 1;
 	} else {
 		return 0;
@@ -207,10 +173,10 @@ flush_if_needed;
 $ <INPUT_STREAM>|pepaste [-vh ] [ --num-words|-n NUM ]
 [ --columns-selected|-c ]
 [ --split-delim|-d ' ' ]
-[ --match-word-regex|-m '/match/' ]
-[ --exclude-word-regex|-M '/negative_match/']
+[ --match-word-regex|-m 'match' ]
+[ --exclude-word-regex|-M 'negative_match']
 [ --end-line-string|-e '' ]
-[ --output-word-separator|-w ' ' ]
+[ --output-word-separator|-s ' ' ]
 
 =head1 OPTIONS
 
@@ -249,13 +215,15 @@ will display as a result:
 
 delimiter of words in line in INPUT stream - used when each input line consists of more than one field
 
-=item B<--match-word-regex '/match/'> or B<-m '/match/'>
+=item B<--match-word-regex 'match'> or B<-m 'match'>
 
-print only WORDS that matching given regex e.g.: -m '/a/' will print only words containing 'a' and rest will be filtered out
+print only WORDS that matching given regex e.g.: -m 'a' will print only words containing 'a' and rest will be filtered out
+NOTE: passing regex in form '/match/' is not allowed because match string is enclosed with '//' in perl code
 
-=item B<--exclude-word '/negative_match/'> or B<-M '/negative_match/'>
+=item B<--exclude-word 'negative_match'> or B<-M 'negative_match'>
 
 Reversed version of -m parameter - skip words if match exists
+NOTE: passing regex in form '/negative_match/' is not allowed because match string is enclosed with '//' in perl code
 
 =item B<--end-line-string ''> or B<-e ''>
 
@@ -267,7 +235,7 @@ set string that is additionally printed on end of every line, just before newlin
 
 =item
 
-=item B<--output-word-separator ' '> or B<-w ' '>
+=item B<--output-word-separator ' '> or B<-s ' '>
 -
 set separator that is used after every printed word. At default one whitespace is used (' '). e.g: -o ',' will result in:
 

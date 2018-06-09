@@ -2,7 +2,7 @@
 Perl-based tool for advanced parsing of data on the fly. It can be used for parsing incoming pipe streams, similar way to 'paste' unix tool but with way more options like regex matching and with more control over formatting output data 
 
 ## Usage:
-pepaste [-vh ] [ --num-words|-n NUM ] [ --split-delim|-d ' ' ] [ --match-word|-m '/match/' ] [ --match-line-regex|-M '/match/' ] [ --end-line-prefix|-e '' ] [ --output-word-separator|-w ' ' ]
+pepaste [-vh ] [ --num-words|-n NUM ] [ --split-delim|-d ' ' ] [ --match-word|-m 'match' ] [ --match-line-regex|-M '/match/' ] [ --end-line-prefix|-e '' ] [ --output-word-separator|-w ' ' ]
 
 
 ## Examples:
@@ -14,7 +14,7 @@ Will split incoming data from 'ls /' command for 2 items space separated on each
 
 Same as above but data will be shown on 4 columns in each line
 
-**$ cat data.txt|pepaste -n 4 -m '/^a/'**
+**$ cat data.txt|pepaste -n 4 -m '^a'**
 
 It will show 4 items in each line but only items that matching regex '/^a/'(starting with letter 'a') will be printed, rest will be filtered out
 

@@ -1,7 +1,6 @@
 #! /usr/bin/perl -w
 
 use strict;
-
 use Test::More;
 
 sub basic_test {
@@ -86,22 +85,22 @@ three_words_all_modes_test("-n 4 -e ' |'", $expected);
 # Three words in line, n=2 -m '/^a/'
 $expected = "aa
 ";
-three_words_all_modes_test("-n 2 -m '/^a/'", $expected);
+three_words_all_modes_test("-n 2 -m '^a'", $expected);
 
 # Three words in line, n=2 -m '/something_not_possible/' (always no-match)
 $expected = "";
-three_words_all_modes_test("-n 2 -m '/something_not_possible/'", $expected);
+three_words_all_modes_test("-n 2 -m 'something_not_possible'", $expected);
 
 # Three words in line, n=2 negative matcher
 $expected = "bb cc
 ";
-three_words_all_modes_test("-n 2 -M '/^a/'", $expected);
+three_words_all_modes_test("-n 2 -M '^a'", $expected);
 
 # Three words in line, n=2 negative dummy matcher
 $expected = "aa bb
 cc
 ";
-three_words_all_modes_test("-n 2 -M '/^something_that_wont_be_matched/'", $expected);
+three_words_all_modes_test("-n 2 -M '^something_that_wont_be_matched'", $expected);
 
 
 # Empty inputs tests, nothing should be generated

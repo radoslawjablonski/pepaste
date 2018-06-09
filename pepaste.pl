@@ -173,8 +173,8 @@ flush_if_needed;
 $ <INPUT_STREAM>|pepaste [-vh ] [ --num-words|-n NUM ]
 [ --columns-selected|-c ]
 [ --split-delim|-d ' ' ]
-[ --match-word-regex|-m 'match' ]
-[ --exclude-word-regex|-M 'negative_match']
+[ --match-word-regex|-m 'regex_match(without //)' ]
+[ --exclude-word-regex|-M 'negative_regex_match(without //)']
 [ --end-line-string|-e '' ]
 [ --output-word-separator|-s ' ' ]
 
@@ -215,15 +215,29 @@ will display as a result:
 
 delimiter of words in line in INPUT stream - used when each input line consists of more than one field
 
-=item B<--match-word-regex 'match'> or B<-m 'match'>
+=item B<--match-word-regex 'regex_match'> or B<-m 'regex_match'>
 
 print only WORDS that matching given regex e.g.: -m 'a' will print only words containing 'a' and rest will be filtered out
-NOTE: passing regex in form '/match/' is not allowed because match string is enclosed with '//' in perl code
 
-=item B<--exclude-word 'negative_match'> or B<-M 'negative_match'>
+=over
+
+=item NOTE: passing regex in form '/match/' is not needed because match string
+is already enclosed with '//' in perl code in order to save typing in command line.
+In other words passing -m '^a' will be rolled into '/^a/' in perl code
+
+=back
+
+=item B<--exclude-word 'negative_regex_match'> or B<-M 'negative_regex_match'>
 
 Reversed version of -m parameter - skip words if match exists
-NOTE: passing regex in form '/negative_match/' is not allowed because match string is enclosed with '//' in perl code
+
+=over
+
+=item NOTE: passing regex in form '/negative_match/' is not needed because match string
+is already enclosed with '//' in perl code in order to save typing in command line.
+In other words passing -M '^a' will be rolled into '/^a/' in perl code
+
+=back
 
 =item B<--end-line-string ''> or B<-e ''>
 

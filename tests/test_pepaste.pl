@@ -102,6 +102,21 @@ cc
 ";
 three_words_all_modes_test("-n 2 -M '^something_that_wont_be_matched'", $expected);
 
+# Three words in line, line-matching positive test
+$expected = "aa
+bb
+cc
+";
+three_words_in_line_test("-l '^aa'", $expected);
+
+# Three words separate lines, line-matching positive test
+$expected = "bb
+";
+three_words_in_sep_lines_test("-l '^bb'", $expected);
+
+# Three words in line, line-matching negative test
+$expected = "";
+three_words_all_modes_test("-l 'something_not_possible_to_match'", $expected);
 
 # Empty inputs tests, nothing should be generated
 $expected = "";

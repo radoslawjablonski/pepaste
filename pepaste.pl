@@ -9,6 +9,7 @@ use Carp; # for croak()
 my %params = ('num-words' => 1,
 			  'split-delim' => ' ',
 			  'match-word-regex' => '',
+			  'match-line-regex' => '',
 			  'exclude-word-regex' => '',
 			  'verbose' => 0,
 			  'end-line-string' => '',
@@ -20,6 +21,7 @@ GetOptions('num-words|n=i' => \$params{'num-words'},
 		   'split-delim|d=s' => \$params{'split-delim'},
 		   'match-word-regex|m=s' =>  \$params{'match-word-regex'},
 		   'exclude-word-regex|M=s' => \$params{'exclude-word-regex'},
+		   'match-line-regex|l=s' =>  \$params{'match-line-regex'},
 		   'verbose|v' => \$params{'verbose'},
 		   'end-line-string|e=s' => \$params{'end-line-string'},
 		   'output-word-separator|s=s' => \$params{'output-word-separator'},
@@ -115,11 +117,18 @@ my $wcount = 1; # word counter
 while (my $line = <STDIN>) {
 	chomp($line);
 
+	# if match-line-regex is passed, then we are filtering input LINES
+	# only matched lines will be handled
+	if ($params{'match-line-regex'} &&
+			!check_match($line, $params{'match-line-regex'})) {
+		say_d "Skipping $line because of 'match-line-regex'";
+		next;
+	}
+
 	my @words_in_line = split($params{'split-delim'}, $line);
 	my @columns_idx_arr;
 	# if user has given columns, then using it now..
 	if ($params{'columns-selected'}) {
-		# TODO: validate!
 		validate_columns_str($params{'columns-selected'});
 		@columns_idx_arr = split(',', $params{'columns-selected'});
 
@@ -175,6 +184,7 @@ $ <INPUT_STREAM>|pepaste [-vh ] [ --num-words|-n NUM ]
 [ --split-delim|-d ' ' ]
 [ --match-word-regex|-m 'regex_match(without //)' ]
 [ --exclude-word-regex|-M 'negative_regex_match(without //)']
+[ --match-line-regex|-l 'regex_match(without //)' ]
 [ --end-line-string|-e '' ]
 [ --output-word-separator|-s ' ' ]
 
@@ -236,6 +246,18 @@ Reversed version of -m parameter - skip words if match exists
 =item NOTE: passing regex in form '/negative_match/' is not needed because match string
 is already enclosed with '//' in perl code in order to save typing in command line.
 In other words passing -M '^a' will be rolled into '/^a/' in perl code
+
+=back
+
+=item B<--match-line-regex 'regex_match'> or B<-l 'regex_match'>
+
+print only LINES that matching given regex e.g.: -l 'a' will print only lines containing 'a' and rest will be filtered out
+
+=over
+
+=item NOTE: passing regex in form '/match/' is not needed because match string
+is already enclosed with '//' in perl code in order to save typing in command line.
+In other lines passing -l '^a' will be rolled into '/^a/' in perl code
 
 =back
 

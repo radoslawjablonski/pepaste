@@ -6,7 +6,7 @@ use Getopt::Long qw(:config bundling); # for case sensitive
 use Pod::Usage qw(pod2usage);;
 use Carp; # for croak()
 
-my %params = ('num-words' => 1,
+my %params = ('num-words' => '',
 			  'split-delim' => ' ',
 			  'match-word-regex' => '',
 			  'match-line-regex' => '',
@@ -37,6 +37,22 @@ sub say_d {
 	# printing all params if debug is enabled
 	if ($params{'verbose'}) {
 		say @_;
+	}
+}
+
+sub init_default_options {
+	# it is nice to initialize n to size of columns to print if '-c' option
+	# is used so user don't have to type -n manually
+	if (!$params{'num-words'}) {
+		if ($params{'columns-selected'}) {
+			my @columns_idx_arr = split(',', $params{'columns-selected'});
+			$params{'num-words'} = @columns_idx_arr;
+			say_d "Setting value to num-words based on 'columns-selected' param to "
+				.scalar @columns_idx_arr;
+		} else {
+			# if still not initialized, defaulting to '1'
+			$params{'num-words'} = 1;
+		}
 	}
 }
 
@@ -109,6 +125,7 @@ sub validate_columns_str {
 
 ### Start ####
 pod2usage(0) if $params{'help'};
+init_default_options(); # smart initializing some vars based on params
 
 say_d 'Using column size: '.$params{'num-words'};
 say_d 'Using word regex: '.$params{'match-word-regex'};

@@ -20,8 +20,8 @@ my %params = ('num-words' => '',
 
 GetOptions('num-words|n=i' => \$params{'num-words'},
 		   'split-delim|d=s' => \$params{'split-delim'},
-		   'match-word-regex|m=s' =>  \$params{'match-word-regex'},
-		   'exclude-word-regex|M=s' => \$params{'exclude-word-regex'},
+		   'match-word-regex|w=s' =>  \$params{'match-word-regex'},
+		   'exclude-word-regex|W=s' => \$params{'exclude-word-regex'},
 		   'match-line-regex|l=s' =>  \$params{'match-line-regex'},
 		   'exclude-line-regex|L=s' =>  \$params{'exclude-line-regex'},
 		   'verbose|v' => \$params{'verbose'},
@@ -209,8 +209,8 @@ flush_if_needed;
 $ <INPUT_STREAM>|pepaste [-vh ] [ --num-words|-n NUM ]
 [ --columns-selected|-c ]
 [ --split-delim|-d ' ' ]
-[ --match-word-regex|-m 'regex_match(without //)' ]
-[ --exclude-word-regex|-M 'negative_regex_match(without //)']
+[ --match-word-regex|-w 'regex_match(without //)' ]
+[ --exclude-word-regex|-W 'negative_regex_match(without //)']
 [ --exclude-line-regex|-L 'negative_regex_match(without //)']
 [ --match-line-regex|-l 'regex_match(without //)' ]
 [ --end-line-string|-e '' ]
@@ -253,21 +253,21 @@ will display as a result:
 
 delimiter of words in line in INPUT stream - used when each input line consists of more than one field
 
-=item B<--match-word-regex 'regex_match'> or B<-m 'regex_match'>
+=item B<--match-word-regex 'regex_match'> or B<-w 'regex_match'>
 
-print only WORDS that matching given regex e.g.: -m 'a' will print only words containing 'a' and rest will be filtered out
+print only WORDS that matching given regex e.g.: -w 'a' will print only words containing 'a' and rest will be filtered out
 
 =over
 
 =item NOTE: passing regex in form '/match/' is not needed because match string
 is already enclosed with '//' in perl code in order to save typing in command line.
-In other words passing -m '^a' will be rolled into '/^a/' in perl code
+In other words passing -w '^a' will be rolled into '/^a/' in perl code
 
 =back
 
-=item B<--exclude-word 'negative_regex_match'> or B<-M 'negative_regex_match'>
+=item B<--exclude-word 'negative_regex_match'> or B<-W 'negative_regex_match'>
 
-Reversed version of -m parameter - skip words if match exists
+Reversed version of -w parameter - skip words if match exists
 
 =over
 

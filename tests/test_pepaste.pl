@@ -82,25 +82,25 @@ $expected = "aa bb cc |
 three_words_all_modes_test("-n 4 -e ' |'", $expected);
 
 ### Matcher tests ###
-# Three words in line, n=2 -m '/^a/'
+# Three words in line, n=2 -w '/^a/'
 $expected = "aa
 ";
-three_words_all_modes_test("-n 2 -m '^a'", $expected);
+three_words_all_modes_test("-n 2 -w '^a'", $expected);
 
-# Three words in line, n=2 -m '/something_not_possible/' (always no-match)
+# Three words in line, n=2 -w '/something_not_possible/' (always no-watch)
 $expected = "";
-three_words_all_modes_test("-n 2 -m 'something_not_possible'", $expected);
+three_words_all_modes_test("-n 2 -w 'something_not_possible'", $expected);
 
 # Three words in line, n=2 negative matcher
 $expected = "bb cc
 ";
-three_words_all_modes_test("-n 2 -M '^a'", $expected);
+three_words_all_modes_test("-n 2 -W '^a'", $expected);
 
 # Three words in line, n=2 negative dummy matcher
 $expected = "aa bb
 cc
 ";
-three_words_all_modes_test("-n 2 -M '^something_that_wont_be_matched'", $expected);
+three_words_all_modes_test("-n 2 -W '^something_that_wont_be_matched'", $expected);
 
 # Three words in line, line-matching positive test
 $expected = "aa

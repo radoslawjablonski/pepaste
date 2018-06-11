@@ -16,6 +16,7 @@ my %params = ('num-words' => '',
 			  'end-line-string' => '',
 			  'output-word-separator' => ' ',
 			  'columns-selected' => '',
+			  'out-of-bounds-str' => '',
 			  'help' => 0);
 
 GetOptions('num-words|n=i' => \$params{'num-words'},
@@ -173,12 +174,15 @@ while (my $line = <STDIN>) {
 		# It may occur that user will pass columns that not always will be
 		# available. If we won't do nothing, then output will be messed with
 		# not very meaningfull errors
+		my $word;
+
 		if ($col_idx > $#words_in_line) {
 			say_d "In line <$line> caught out of bounds index ".($col_idx + 1).
-				" Moving on...";
-			next;
+				" Printing out-of-bounds-str: <$params{'out-of-bounds-str'}>";
+			$word = $params{'out-of-bounds-str'};
+		} else {
+			$word = $words_in_line[$col_idx];
 		}
-		my $word = $words_in_line[$col_idx];
 
 		# skipping if word does NOT match-word-regex
 		if ($params{'match-word-regex'} &&

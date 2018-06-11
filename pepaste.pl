@@ -29,6 +29,7 @@ GetOptions('num-words|n=i' => \$params{'num-words'},
 		   'end-line-string|e=s' => \$params{'end-line-string'},
 		   'output-word-separator|s=s' => \$params{'output-word-separator'},
 		   'columns-selected|c=s' => \$params{'columns-selected'},
+		   'out-of-bounds-str|o=s' => \$params{'out-of-bounds-str'},
 		   'help|h' => \$params{'help'}
 	   )
 	or pod2usage(-verbose => 0);
@@ -218,6 +219,7 @@ $ <INPUT_STREAM>|pepaste [-vh ] [ --num-words|-n NUM ]
 [ --exclude-line-regex|-L 'negative_regex_match(without //)']
 [ --match-line-regex|-l 'regex_match(without //)' ]
 [ --end-line-string|-e '' ]
+[ --out-of-bounds-str|-o '']
 [ --output-word-separator|-s ' ' ]
 
 =head1 OPTIONS
@@ -324,6 +326,14 @@ set separator that is used after every printed word. At default one whitespace i
 =item d,e,f
 
 =item
+
+=item B<--out-of-bounds-str> or B<-o>
+
+set string that will be printed when no column with given index
+will be found. It is used only when '-c' option has been passed
+by user and column occurred with less elements than expected - by
+default empty string is printed out in that place but it can be
+customized using this parameter.
 
 =item B<--verbose> or B<-v>
 

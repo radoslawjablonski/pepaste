@@ -46,16 +46,12 @@ sub empty_input_test {
 my $expected;
 
 # Three words in line, no params (default n=1)
-$expected = "aa
-bb
-cc
+$expected = "aa bb cc
 ";
 three_words_all_modes_test("", $expected);
 
 # Three words in line, only end-line string passed
-$expected = "aa\\
-bb\\
-cc\\
+$expected = "aa bb cc\\
 ";
 three_words_all_modes_test("-e '\\'", $expected);
 
@@ -103,9 +99,7 @@ cc
 three_words_all_modes_test("-n 2 -W '^something_that_wont_be_matched'", $expected);
 
 # Three words in line, line-matching positive test
-$expected = "aa
-bb
-cc
+$expected = "aa bb cc
 ";
 three_words_in_line_test("-l '^aa'", $expected);
 

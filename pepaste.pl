@@ -51,9 +51,6 @@ sub init_default_options {
 			$params{'num-words'} = @columns_idx_arr;
 			say_d "Setting value to num-words based on 'columns-selected' param to "
 				.scalar @columns_idx_arr;
-		} else {
-			# if still not initialized, defaulting to '1'
-			$params{'num-words'} = 1;
 		}
 	}
 }
@@ -77,7 +74,9 @@ sub init_default_options {
 
 		print $word;
 
-		if ($word_counter % $max_n_words == 0) {
+		# if $max_n_words not defined, then everything will be always
+		# printed in single line
+		if ($max_n_words && $word_counter % $max_n_words == 0) {
 			# printing end of line
 			print "$params{'end-line-string'}\n";
 			$was_flushed = 1;
@@ -241,7 +240,7 @@ will display only content from column '1' and '2'
 
 =item B<--num-words N> or B<-n N>
 
-number of words per line that will be generated in output stream.
+number of words per line that will be generated in output stream. Default '0' means that everything will be printed in one single line.
 
 =item B<--output-word-separator ' '> or B<-s ' '>
 char or string that separates words in line in output stream

@@ -1,0 +1,10 @@
+#!/usr/bin/perl -pl
+
+use warnings;
+use strict;
+
+# This little program puts string in single quotes.
+# It is very usefull when trying to alias perl scripts
+
+s/'/'\\''/g;
+$_ = qq['$_'];

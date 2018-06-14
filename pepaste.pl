@@ -6,6 +6,8 @@ use Getopt::Long qw(:config bundling); # for case sensitive
 use Pod::Usage qw(pod2usage);;
 use Carp; # for croak()
 
+use constant PEPASTE_VERSION => "0.1";
+
 my %params = ('num-words' => '',
 			  'split-delim' => ' ',
 			  'match-word-regex' => '',
@@ -17,7 +19,8 @@ my %params = ('num-words' => '',
 			  'output-word-separator' => ' ',
 			  'columns-selected' => '',
 			  'out-of-bounds-str' => '',
-			  'help' => 0);
+			  'help' => 0,
+			  'version' => 0);
 
 GetOptions('num-words|n=i' => \$params{'num-words'},
 		   'split-delim|d=s' => \$params{'split-delim'},
@@ -30,7 +33,8 @@ GetOptions('num-words|n=i' => \$params{'num-words'},
 		   'output-word-separator|s=s' => \$params{'output-word-separator'},
 		   'columns-selected|c=s' => \$params{'columns-selected'},
 		   'out-of-bounds-str|o=s' => \$params{'out-of-bounds-str'},
-		   'help|h' => \$params{'help'}
+		   'help|h' => \$params{'help'},
+		   'version' => \$params{'version'}
 	   )
 	or pod2usage(-verbose => 0);
 ;
@@ -124,8 +128,15 @@ sub validate_columns_str {
 
 }
 
+sub print_version {
+	say "Pepaste version: ", PEPASTE_VERSION;
+	exit(0);
+}
+
 ### Start ####
 pod2usage(0) if $params{'help'};
+print_version() if $params{'version'};
+
 init_default_options(); # smart initializing some vars based on params
 
 say_d 'Using column size: '.$params{'num-words'};

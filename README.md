@@ -2,31 +2,51 @@
 Perl-based tool for advanced parsing of data on the fly. It can be used for parsing incoming pipe streams, similar way to 'paste' unix tool but with way more options like regex matching and with more control over formatting output data 
 
 ## Usage:
-pepaste [-vh ] [ --num-words|-n NUM ] [ --split-delim|-d ' ' ] [ --match-word|-m 'match' ] [ --match-line-regex|-M '/match/' ] [ --end-line-prefix|-e '' ] [ --output-word-separator|-w ' ' ]
+pepaste [-vh ] [ --num-words|-n NUM ]                                                                                                                     
+[ --columns-selected|-c ]                                                                                                                                                  
+[ --split-delim|-d ' ' ]                                                                                                                                                   
+[ --match-word-regex|-w 'regex_match(without //)' ]                                                                                                                        
+[ --exclude-word-regex|-W 'no_match_regex(without //)']                                                                                                                    
+[ --exclude-line-regex|-L 'no_match_regex(without //)']                                                                                                                    
+[ --match-line-regex|-l 'regex_match(without //)' ]                                                                                                                        
+[ --end-line-string|-e '' ]                                                                                                                                                
+[ --out-of-bounds-str|-o '']                                                                                                                                               
+[ --output-word-separator|-s ' ' ]                                                                                                                                         
+[ --version ]                    
 
 
 ## Examples:
-**$ ls /|pepaste**
+1. Calling 'pepaste' without arguments by default will put every word found on input (no matter if found in same line or in next line) and use single space as a separator. In other words, behavior will be similar to *paste -sd " "* command
+```
+$ ls /|pepaste
+bin boot cdrom dev etc home initrd.img lib lib64 lost+found media mnt opt proc root run sbin snap srv sys tmp usr var vmlinuz
+```
 
-Will split incoming data from 'ls /' command for 2 items space separated on each line by default.
+2. Output entries can be grouped in lines using *-n* parameter - we can set how many elements(columns) will be printed in each line
+```
+$ ls /|pepaste -n 3
+in boot cdrom
+dev etc home
+initrd.img lib lib64
+lost+found media mnt
+opt proc root
+run sbin snap
+srv sys tmp
+usr var vmlinuz
 
-**$ ls /|pepaste -n 4**
+```
 
-Same as above but data will be shown on 4 columns in each line
+3. There is possibility to put custom char sequence on the end of each line using *-e ''* parameter. It is quite handy when content has to be pasted into some script and interpreted as one very long line. 
+```
+$ ls /|pepaste -n 3 -e ' \'                                                                                                             [ master ]
+bin boot cdrom \
+dev etc home \
+initrd.img lib lib64 \
+lost+found media mnt \
+opt proc root \
+run sbin snap \
+srv sys tmp \
+usr var vmlinuz \
 
-**$ cat data.txt|pepaste -n 4 -m '^a'**
+```
 
-It will show 4 items in each line but only items that matching regex '/^a/'(starting with letter 'a') will be printed, rest will be filtered out
-
-**$ cat data.txt|pepaste -n 3 -e '\\'**
-
-Data will be shown in thee columns and on each end of line ' \' sequence will be printed out:
-aa bb cc \
-dd ee
-
-
-**$ cat data.txt|pepaste -n 3 -e '\\' -w ','**
-
-Same as above but items will be separated with commas instead of spaces:
-aa,bb,cc \
-dd,ee

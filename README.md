@@ -62,8 +62,21 @@ vmlinuz \
 $ ls /|pepaste -n 3 -e ' \' -w "\W"
 initrd.img lost+found \
 ```
+5. Custom separator between words can be set using *-s* option. Here is how to separate words using space and comma *(' ,')* instead of single space:
+```
+$ ls /|pepaste -n 3 -e ' \' -s ', '    
+bin, boot, cdrom \
+dev, etc, home \
+initrd.img, lib, lib64 \
+lost+found, media, mnt \
+opt, proc, root \
+run, sbin, snap \
+srv, sys, tmp \
+usr, var, vmlinuz \
 
-5. There is also option to display only selected columns from input stream. Let's display only *1*(access rights) and *9*(file name) from *ls -l* command output:
+```
+
+6. There is also option to display only selected columns from input stream. Let's display only *1*(access rights) and *9*(file name) from *ls -l* command output:
 ```
 $ ls -l |pepaste -c "1,9"
 total 
@@ -77,7 +90,7 @@ lrwxrwxrwx pepaste
 drwxrwxr-x tests
 ```
 
-6. Option *-L* can be used for remove lines from input stream that are matching given regex (small *-l* works in opposite fashion). Here we are removing lines starting with *'total'* keyword:
+7. Option *-L* can be used for remove lines from input stream that are matching given regex (small *-l* works in opposite fashion). Here we are removing lines starting with *'total'* keyword:
 ```
 $ ls -l |pepaste -c "1,9" - L "^total"
 -rw-rw-r-- data.txt

@@ -6,7 +6,7 @@ use Getopt::Long qw(:config bundling); # for case sensitive
 use Pod::Usage qw(pod2usage);;
 use Carp; # for croak()
 
-use constant PEPASTE_VERSION => "0.1";
+use constant PEPASTE_VERSION_STR => "Pepaste version: 0.1";
 
 my %params = ('num-words' => '',
 			  'split-delim' => ' ',
@@ -20,6 +20,7 @@ my %params = ('num-words' => '',
 			  'columns-selected' => '',
 			  'out-of-bounds-str' => '',
 			  'help' => 0,
+			  'usage' => 0,
 			  'version' => 0);
 
 GetOptions('num-words|n=i' => \$params{'num-words'},
@@ -34,6 +35,7 @@ GetOptions('num-words|n=i' => \$params{'num-words'},
 		   'columns-selected|c=s' => \$params{'columns-selected'},
 		   'out-of-bounds-str|o=s' => \$params{'out-of-bounds-str'},
 		   'help|h' => \$params{'help'},
+		   'usage' => \$params{'usage'},
 		   'version' => \$params{'version'}
 	   )
 	or pod2usage(-verbose => 0);
@@ -129,12 +131,24 @@ sub validate_columns_str {
 }
 
 sub print_version {
-	say "Pepaste version: ", PEPASTE_VERSION;
+	say PEPASTE_VERSION_STR;
 	exit(0);
 }
 
 ### Start ####
-pod2usage(0) if $params{'help'};
+if ($params{'help'}) {
+	pod2usage(-exitval => 0,
+			  -verbose => 0,
+			  -message => "Use '--usage' option for more detailed help information\n");
+}
+
+if ($params{'usage'}) {
+	pod2usage(-exitval => 0,
+			  -verbose => 2,
+			  -noperldoc => 1,
+		  -message => PEPASTE_VERSION_STR);
+}
+
 print_version() if $params{'version'};
 
 init_default_options(); # smart initializing some vars based on params
@@ -225,12 +239,13 @@ $ <INPUT_STREAM>|pepaste [-vh ] [ --num-words|-n NUM ]
 [ --columns-selected|-c ]
 [ --split-delim|-d ' ' ]
 [ --match-word-regex|-w 'regex_match(without //)' ]
-[ --exclude-word-regex|-W 'negative_regex_match(without //)']
-[ --exclude-line-regex|-L 'negative_regex_match(without //)']
+[ --exclude-word-regex|-W 'no_match_regex(without //)']
+[ --exclude-line-regex|-L 'no_match_regex(without //)']
 [ --match-line-regex|-l 'regex_match(without //)' ]
 [ --end-line-string|-e '' ]
 [ --out-of-bounds-str|-o '']
 [ --output-word-separator|-s ' ' ]
+[ --version ]
 
 =head1 OPTIONS
 
@@ -254,16 +269,18 @@ will display only content from column '1' and '2'
 number of words per line that will be generated in output stream. Default '0' means that everything will be printed in one single line.
 
 =item B<--output-word-separator ' '> or B<-s ' '>
-char or string that separates words in line in output stream
+
+set separator that is used after every printed word. At default one whitespace is used (' '). Example:
 
 =over
 
-=item echo aa bb cc|pepaste -s , -n 3
+=item $ echo a b c d e f|pepaste -n 3 -s , 
+
+=item a,b,c
+
+=item d,e,f
 
 =back
-
-will display as a result:
-"aa,bb,cc"
 
 =item B<--split-delim ' '> or B<-d ' '>
 
@@ -281,13 +298,13 @@ In other words passing -w '^a' will be rolled into '/^a/' in perl code
 
 =back
 
-=item B<--exclude-word 'negative_regex_match'> or B<-W 'negative_regex_match'>
+=item B<--exclude-word 'non_match_regex'> or B<-W 'non_match_regex'>
 
 Reversed version of -w parameter - skip words if match exists
 
 =over
 
-=item NOTE: passing regex in form '/negative_match/' is not needed because match string
+=item NOTE: passing regex in form '/non_regex_match/' is not needed because match string
 is already enclosed with '//' in perl code in order to save typing in command line.
 In other words passing -M '^a' will be rolled into '/^a/' in perl code
 
@@ -319,29 +336,23 @@ In other lines passing -L '^a' will be rolled into '/^a/' in perl code
 
 =item B<--end-line-string ''> or B<-e ''>
 
-set string that is additionally printed on end of every line, just before newline marker.e.g: -e '\' will result in:
+set string that is additionally printed on end of every line, just before newline marker. Here is the example:
+
+=over
+
+=item $ echo a b c d e f|pepaste -n 3 -e '\'
 
 =item a,b,c\
 
 =item d,e,f\
 
-=item
-
-=item B<--output-word-separator ' '> or B<-s ' '>
--
-set separator that is used after every printed word. At default one whitespace is used (' '). e.g: -o ',' will result in:
-
-=item a,b,c
-
-=item d,e,f
-
-=item
+=back
 
 =item B<--out-of-bounds-str> or B<-o>
 
 set string that will be printed when no column with given index
 will be found. It is used only when '-c' option has been passed
-by user and column occurred with less elements than expected - by
+by user and some line occurred with less elements than expected - by
 default empty string is printed out in that place but it can be
 customized using this parameter.
 
@@ -351,6 +362,10 @@ prints additional debug information
 
 =item B<--help> or B<-h>
 
-this help information
+short help information
+
+=item B<--version>
+
+Print version information
 
 =back

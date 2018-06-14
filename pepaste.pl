@@ -54,9 +54,14 @@ sub init_default_options {
 	if (!$params{'num-words'}) {
 		if ($params{'columns-selected'}) {
 			my @columns_idx_arr = split(',', $params{'columns-selected'});
-			$params{'num-words'} = @columns_idx_arr;
-			say_d "Setting value to num-words based on 'columns-selected' param to "
-				.scalar @columns_idx_arr;
+			# setting num-columns to size only if size > 1, otherwise print
+			# everything in one line to be consistent with default no-'n'
+			# behavior
+			if (@columns_idx_arr > 1) {
+				$params{'num-words'} = @columns_idx_arr;
+				say_d "Setting value to num-words based on 'columns-selected' param to "
+					.scalar @columns_idx_arr;
+			}
 		}
 	}
 }

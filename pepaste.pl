@@ -66,11 +66,11 @@ sub init_default_options {
 	}
 
 	# if there is something left in @ARGV, then taking first thing as
-	# a line-regex (BUT only if regex not set using options)
+	# a word-regex (BUT only if regex not set using options)
 	if (@ARGV) {
-		if (@ARGV == 1 && !$params{'match-line-regex'}) {
-			say_d "Setting match-line-regex to $ARGV[0]";
-			$params{'match-line-regex'} = $ARGV[0];
+		if (@ARGV == 1 && !$params{'match-word-regex'}) {
+			say_d "Setting match-word-regex to $ARGV[0]";
+			$params{'match-word-regex'} = $ARGV[0];
 		} else {
 			say "Warning: multiple non-parsed options ignored: @ARGV";
 		}

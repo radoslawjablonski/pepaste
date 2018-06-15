@@ -1,0 +1,41 @@
+#! /usr/bin/perl
+
+use warnings;
+use strict;
+use Getopt::Long qw(:config bundling); # for case sensitive
+use Pod::Usage qw(pod2usage);;
+use Scalar::Util qw(looks_like_number);
+
+=head1 SYNOPSIS
+
+Simple program for converting decimal values to hex from input stream
+pehex [-h|--help]
+
+=over
+
+=item Example:
+
+=item $ echo 15|pehex
+
+=item 0xf
+
+=back
+
+=cut
+
+my %params = ('help' => 0);
+GetOptions('help|h' => \$params{'help'});
+
+pod2usage(0) if $params{'help'};
+
+while (my $line = <>) {
+	my @words = split(' ', $line);
+	foreach my $word (@words) {
+		if (looks_like_number($word)) {
+			printf("0x%x ", $word);
+		} else {
+			print("N/A ");
+		}
+	}
+	print "\n";
+}

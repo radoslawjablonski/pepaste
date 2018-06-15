@@ -8,12 +8,24 @@ use Scalar::Util qw(looks_like_number);
 
 =head1 SYNOPSIS
 
-Simple program for converting decimal values to hex from input stream
-pehex [-h|--help]
+Simple program for converting decimal values to hex from input stream.
+Works with line parameters as well as input streams.
+
+pehex [-h|--help] NUM_1 NUM_2 NUM_3 .....
 
 =over
 
-=item Example:
+=item Example with line params:
+
+=item $ pehex 10 15
+
+=item 0xa 0xf
+
+=back
+
+=over
+
+=item Example with input stream:
 
 =item $ echo 15|pehex
 
@@ -23,12 +35,9 @@ pehex [-h|--help]
 
 =cut
 
-my %params = ('help' => 0);
-GetOptions('help|h' => \$params{'help'});
+sub convert_line_to_hex {
+	my $line = shift;
 
-pod2usage(0) if $params{'help'};
-
-while (my $line = <>) {
 	my @words = split(' ', $line);
 	foreach my $word (@words) {
 		if (looks_like_number($word)) {
@@ -38,4 +47,19 @@ while (my $line = <>) {
 		}
 	}
 	print "\n";
+}
+
+my %params = ('help' => 0);
+GetOptions('help|h' => \$params{'help'});
+
+pod2usage(0) if $params{'help'};
+
+### Start #####
+if (@ARGV) {
+	convert_line_to_hex(join(' ', @ARGV));
+	exit(0);
+}
+
+while (my $line = <STDIN>) {
+	convert_line_to_hex($line);
 }

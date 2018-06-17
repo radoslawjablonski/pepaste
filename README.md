@@ -16,12 +16,12 @@ pepaste [-vh ] [ --num-words|-n NUM ]
 
 
 ## Examples:
-1. Calling 'pepaste' without arguments by default will put every word found on input (no matter if found in same line or in next line) and use single space as a separator. In other words, behavior will be similar to *paste -sd " "* command
+1. Calling 'pepaste' without arguments by default will put every word in single line (no matter if found in input on the same or  next line) and use single space as a separator. In other words, behavior will be similar to *paste -sd " "* command
 ```
 $ ls /|pepaste
 bin boot cdrom dev etc home initrd.img lib lib64 lost+found media mnt opt proc root run sbin snap srv sys tmp usr var vmlinuz
 ```
-2. Output entries can be grouped in lines using *-n* parameter - we can set how many elements(columns) will be printed in each line
+2. Output entries can be grouped in lines using *-n* parameter - it sets number of elements (columns) in each line
 ```
 $ ls /|pepaste -n 3
 in boot cdrom
@@ -33,7 +33,8 @@ run sbin snap
 srv sys tmp
 usr var vmlinuz
 ```
-3. There is possibility to put custom char sequence on the end of each line using *-e ''* parameter. It is quite handy when content has to be pasted into some script and interpreted as one very long line. 
+3. There is possibility to put custom char sequence on the end of each line using *-e ''* parameter. It is quite handy when content has to be pasted into some script and interpreted as one very long line.
+
 ```
 $ ls /|pepaste -n 3 -e ' \'  
 bin boot cdrom \
@@ -62,7 +63,7 @@ vmlinuz \
 $ ls /|pepaste -n 3 -e ' \' -w "\W"
 initrd.img lost+found \
 ```
-5. Custom separator between words can be set using *-s* option. Here is how to separate words using space and comma *(' ,')* instead of single space:
+5. Custom separator between words can be set using *-s* option. Here is shown how to separate words using space and comma *(' ,')* instead of single space:
 ```
 $ ls /|pepaste -n 3 -e ' \' -s ', '    
 bin, boot, cdrom \

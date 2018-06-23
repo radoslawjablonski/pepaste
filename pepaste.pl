@@ -1,10 +1,13 @@
-#! /usr/bin/perl -w
+#! /usr/bin/perl
 
-use 5.14.0; # for 'say'
+use 5.20.0; # for 'say' and function signatures
 use strict;
+use warnings;
 use Getopt::Long qw(:config bundling); # for case sensitive
 use Pod::Usage qw(pod2usage);;
 use Carp; # for croak()
+use feature qw(signatures);
+no warnings qw(experimental::signatures);
 
 use constant PEPASTE_VERSION_STR => "Pepaste version: 0.1";
 
@@ -48,7 +51,7 @@ sub say_d {
 	}
 }
 
-sub init_default_options {
+sub init_default_options() {
 	# it is nice to initialize n to size of columns to print if '-c' option
 	# is used so user don't have to type -n manually
 	if (!$params{'num-words'}) {
@@ -81,13 +84,7 @@ sub init_default_options {
 	# use for tracking if newline is needed on end of the program
 	my $was_flushed = 1;
 
-	sub print_word {
-		croak "Wrong number of arguments: ".@_ if @_ != 3;
-
-		my $word = shift;
-		my $max_n_words = shift;
-		my $word_counter = shift;
-
+	sub print_word($word, $max_n_words, $word_counter) {
 		if (!$was_flushed) {
 			# it means that other word was already printed in that
 			# line, we have to add delimiter char before
@@ -115,12 +112,7 @@ sub init_default_options {
 }
 
 ## $str, $regex
-sub check_match {
-	croak("Wrong number of arguments: ".@_) if @_ != 2;
-
-	my $str = shift;
-	my $regex = shift;
-
+sub check_match($str, $regex) {
 	if ($str eq '') {
 		say_d "Skipping match for string $str because regex empty with 0 exit..";
 		return 0;
@@ -134,9 +126,7 @@ sub check_match {
 	}
 }
 
-sub validate_columns_str {
-	my $columns_str = shift;
-
+sub validate_columns_str($columns_str) {
 	# we are looking for digit number that is at the end of series
 	# 'digit,' (digit colon) sequence. Whitespace after colon are also
 	# acceptable
@@ -146,7 +136,7 @@ sub validate_columns_str {
 
 }
 
-sub print_version {
+sub print_version() {
 	say PEPASTE_VERSION_STR;
 	exit(0);
 }

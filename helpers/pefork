@@ -15,7 +15,7 @@ $ pefork [-t|threads-num 4] <SCRIPT_NAME> first_opt_variant second_opt_variant t
 
 EXAMPLE:
 
-$ pefork sleep 3 4 5
+$ pefork -t 2 sleep 3 4 5
 
 Runs sleep parallel with 3, 4 and 5 seconds - finally prints report with results on 4 threads by default.
 

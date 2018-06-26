@@ -1,0 +1,66 @@
+#! /usr/bin/perl
+
+use warnings;
+use strict;
+use Parallel::ForkManager; # install libparallel-forkmanager-perl
+use File::Temp;
+use Pod::Usage qw(pod2usage);
+use Getopt::Long;
+
+=head1 SYNOPSIS
+
+Runs programs in parallel mode. Requires libparallel-forkmanager-perl/perl-Parallel-ForkManager package.
+
+$ pefork [-t|threads-num 4] <SCRIPT_NAME> first_opt_variant second_opt_variant third_opt_variant
+
+EXAMPLE:
+
+$ pefork sleep 3 4 5
+
+Runs sleep parallel with 3, 4 and 5 seconds - finally prints report with results on 4 threads by default.
+
+=cut
+
+my %params = ('threads-num' => 4);
+GetOptions('threads-num|t=i' => \$params{'threads-num'});
+
+my $pm = new Parallel::ForkManager($params{'threads-num'});
+my $script_name = shift @ARGV;
+my $results_file_name = tmpnam();
+
+## START ##
+if (@ARGV < 1) {
+	pod2usage(0);
+}
+
+print "Using threads count: $params{'threads-num'}\n";
+
+foreach my $param (@ARGV) {
+  my $pid = $pm->start and next;
+  print "Calling script $script_name with $param\n";
+  `$script_name $param`;
+
+  my $msg = "*** <$script_name $param> result: ";
+  if ($? == 0) {
+    $msg .= "OK";
+  } else {
+    $msg .= "FAILURE";
+  }
+  $msg .= " ***\n";
+
+  open(my $result_fh, '>>', $results_file_name) or die "Could not open file $!";
+  print $result_fh  $msg;
+  close $result_fh;
+
+  $pm->finish; # Terminates the child process
+}
+
+$pm->wait_all_children;
+
+print "ALL JOBS FINISHED\n";
+open(my $result_fh, '<', $results_file_name) or die "Could not open file $!";
+while (my $line = <$result_fh>) {
+  print $line;
+}
+close $result_fh;
+unlink($results_file_name);

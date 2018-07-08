@@ -6,6 +6,7 @@ use Parallel::ForkManager; # install libparallel-forkmanager-perl
 use File::Temp;
 use Pod::Usage qw(pod2usage);
 use Getopt::Long;
+use Term::ANSIColor;
 
 =head1 SYNOPSIS
 
@@ -20,6 +21,7 @@ $ pefork -t 2 sleep 3 4 5
 Runs sleep parallel with 3, 4 and 5 seconds - finally prints report with results on 4 threads by default.
 
 NOTE: Requires libparallel-forkmanager-perl/perl-Parallel-ForkManager package.
+
 =cut
 
 my %params = ('threads-num' => 4,
@@ -45,14 +47,14 @@ foreach my $param (@ARGV) {
 
   my $msg = "*** <$script_name $param> result: ";
   if ($? == 0) {
-    $msg .= "OK";
+    $msg .= colored(['green'],"OK");
   } else {
-    $msg .= "FAILURE";
+    $msg .= colored(['red'], "FAILURE");
   }
   $msg .= " ***\n";
 
   open(my $result_fh, '>>', $results_file_name) or die "Could not open file $!";
-  print $result_fh  $msg;
+  print $result_fh $msg;
   close $result_fh;
 
   $pm->finish; # Terminates the child process

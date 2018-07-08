@@ -43,7 +43,14 @@ print "Using threads count: $params{'threads-num'}\n";
 foreach my $param (@ARGV) {
   my $pid = $pm->start and next;
   print "Calling script $script_name with $param\n";
-  `$script_name $param`;
+
+  # using open instead of system() to nicely read output one by line
+  # NOTE: duplicating stderr to stdout: 2>&1
+  my $pid_cmd = open(PH, "$script_name $param 2>&1|");
+  while (<PH>) {
+	  print; #TODO: write this to some file
+  }
+  waitpid($pid_cmd, 0);
 
   my $msg = "*** <$script_name $param> result: ";
   if ($? == 0) {

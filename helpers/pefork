@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 use Parallel::ForkManager; # install libparallel-forkmanager-perl
-use File::Temp;
+use File::Temp qw/ tempfile tmpnam /;
 use Pod::Usage qw(pod2usage);
 use Getopt::Long;
 use Term::ANSIColor;
@@ -47,22 +47,28 @@ foreach my $param (@ARGV) {
   # using open instead of system() to nicely read output one by line
   # NOTE: duplicating stderr to stdout: 2>&1
   my $pid_cmd = open(PH, "$script_name $param 2>&1|");
-  while (<PH>) {
-	  print; #TODO: write this to some file
+
+  #opening file for job stdout and stderr output
+  (my $job_fh, my $job_output_file_name) = tempfile();
+
+  while (my $output_line = <PH>) {
+	  print $job_fh $output_line;
   }
   waitpid($pid_cmd, 0);
 
   my $msg = "*** <$script_name $param> result: ";
   if ($? == 0) {
-    $msg .= colored(['green'],"OK");
+	  $msg .= colored(['green'],"OK");
   } else {
-    $msg .= colored(['red'], "FAILURE");
+	  $msg .= colored(['red'], "FAILURE");
   }
+  $msg .= " (logs: $job_output_file_name)";
   $msg .= " ***\n";
 
   open(my $result_fh, '>>', $results_file_name) or die "Could not open file $!";
   print $result_fh $msg;
   close $result_fh;
+  close $job_output_file_name;
 
   $pm->finish; # Terminates the child process
 }

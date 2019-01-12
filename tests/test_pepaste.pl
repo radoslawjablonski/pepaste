@@ -1,5 +1,6 @@
 #! /usr/bin/perl -w
 
+## NOTE: this requires 'perl-Test-Simple' package installed in system
 use strict;
 use Test::More;
 

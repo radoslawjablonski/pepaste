@@ -6,7 +6,7 @@ use Getopt::Long qw(:config bundling); # for case sensitive
 use Pod::Usage qw(pod2usage);;
 use Carp; # for croak()
 
-use constant PEPASTE_VERSION_STR => "Pepaste version: 0.1";
+use constant PEPASTE_VERSION_STR => "Pepaste version: 0.2";
 
 my %params = ('num-words' => '',
 			  'split-delim' => ' ',

@@ -10,7 +10,7 @@ sub basic_test {
 	my $expected_str = shift;
 	my $test_name = shift;
 
-	my $output = `$data_gen_cmd|../pepaste $pepaste_params`;
+	my $output = `$data_gen_cmd|../pepaste.pl $pepaste_params`;
 
 	cmp_ok ($output, "eq", $expected_str, "$test_name, pepaste params: ".$pepaste_params);
 }

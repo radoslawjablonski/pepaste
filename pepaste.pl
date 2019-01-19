@@ -140,7 +140,8 @@ sub validate_columns_str {
 	# we are looking for digit number that is at the end of series
 	# 'digit,' (digit colon) sequence. Whitespace after colon are also
 	# acceptable
-	if ($columns_str !~ /^(\d+\,\s?)*(\d+)+$/) {
+    # NOTE: also accepting negative numbers
+	if ($columns_str !~ /^(-?\d+\,\s?)*(-?\d+)+$/) {
 		die "Wrong columns array passed: '".$columns_str."'";
 	}
 
@@ -203,7 +204,11 @@ while (my $line = <STDIN>) {
 
 		# substracting '1' from all indexes to make columns selection
 		# more user friendly - user will pass columns starting with '1'
-		$_-- foreach @columns_idx_arr;
+		foreach my $index (@columns_idx_arr) {
+            # allowing negative indexes to point content from
+            # right side (-1 means first from right)
+            $index-- if $index >= 0;
+        }
 	} else {
 		# traditional approach, all columns will be visible
 		@columns_idx_arr = (0 .. $#words_in_line);

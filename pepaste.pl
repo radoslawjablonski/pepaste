@@ -222,8 +222,12 @@ while (my $line = <STDIN>) {
 		# not very meaningfull errors
 		my $word;
 
-		if ($col_idx > $#words_in_line) {
-			say_d "In line <$line> caught out of bounds index ".($col_idx + 1).
+        my $max_words_index = $#words_in_line;
+        # caveat: $# means maximum index, which is (count -1)
+		if ($col_idx > $max_words_index ||
+                ($max_words_index + 1) + $col_idx < 0) { #negative indexes
+			say_d "In line <$line> caught out of bounds index ".($col_idx).
+                " whereas words in line count: $#words_in_line".
 				" Printing out-of-bounds-str: <$params{'out-of-bounds-str'}>";
 			$word = $params{'out-of-bounds-str'};
 		} else {

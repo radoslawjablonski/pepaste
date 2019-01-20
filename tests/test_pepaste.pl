@@ -10,7 +10,7 @@ sub basic_test {
 	my $expected_str = shift;
 	my $test_name = shift;
 
-	my $output = `$data_gen_cmd|../pepaste.pl $pepaste_params`;
+my $output = `$data_gen_cmd|../pepaste.pl $pepaste_params`;
 
 	cmp_ok ($output, "eq", $expected_str, "$test_name, pepaste params: ".$pepaste_params);
 }
@@ -27,6 +27,13 @@ sub three_words_in_sep_lines_test {
 	my $expected_str = shift;
 
 	basic_test("/bin/echo -e 'aa\nbb\ncc\n'", $pepaste_params, $expected_str, "Three words in separated lines");
+}
+
+sub three_words_in_two_lines_test {
+	my $pepaste_params = shift;
+	my $expected_str = shift;
+
+	basic_test("/bin/echo -e 'aa bb cc\ndd ee ff\n'", $pepaste_params, $expected_str, "Three words in two lines");
 }
 
 sub three_words_all_modes_test {
@@ -112,6 +119,19 @@ three_words_in_sep_lines_test("-l '^bb'", $expected);
 # Three words in line, line-matching negative test
 $expected = "";
 three_words_all_modes_test("-l 'something_not_possible_to_match'", $expected);
+
+# Three words in line, negative column separator
+$expected = "cc
+";
+three_words_in_line_test("-c '-1'", $expected);
+
+$expected = "cc
+ff
+
+";
+
+# Three words in two lines, negative column separator with one column print
+three_words_in_two_lines_test("-c '-1' -n 1", $expected);
 
 # Empty inputs tests, nothing should be generated
 $expected = "";

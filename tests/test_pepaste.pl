@@ -51,6 +51,13 @@ sub empty_input_test {
 	basic_test("/bin/echo", $pepaste_params, $expected_str, "Empty input");
 }
 
+sub empty_line_test {
+	my $pepaste_params = shift;
+	my $expected_str = shift;
+
+	basic_test("/bin/echo -e '\n'", $pepaste_params, $expected_str, "Empty line input");
+}
+
 my $expected;
 
 # Three words in line, no params (default n=1)
@@ -146,6 +153,7 @@ $expected = "";
 empty_input_test("", $expected);
 empty_input_test("-n 3", $expected);
 empty_input_test("-e '\\'", $expected);
-
+empty_input_test("-c '-1'", $expected);
+empty_line_test("-c '-1'", $expected);
 
 done_testing();

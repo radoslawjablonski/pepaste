@@ -129,8 +129,7 @@ three_words_in_line_test("-c '-1'", $expected);
 # Three words in two lines, negative column separator for two columns
 $expected = "aa cc
 dd ff
- 
-";# FIXME: whitespace is at the end of last line
+";
 three_words_in_two_lines_test("-c '1, -1'", $expected);
 
 # Three words in two lines, positive column separator - result same as above two columns
@@ -139,7 +138,6 @@ three_words_in_two_lines_test("-c '1, 3'", $expected);
 # Three words in two lines, negative column separator with one column print
 $expected = "cc
 ff
-
 ";
 three_words_in_two_lines_test("-c '-1' -n 1", $expected);
 

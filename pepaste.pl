@@ -179,6 +179,11 @@ my $wcount = 1; # word counter
 while (my $line = <STDIN>) {
 	chomp($line);
 
+    if ($line =~ /^$/) {
+        say_d "Ignoring empty input line";
+        next;
+    }
+
 	# if match-line-regex is passed, then we are filtering input LINES
 	# only matched lines will be handled
 	if ($params{'match-line-regex'} &&

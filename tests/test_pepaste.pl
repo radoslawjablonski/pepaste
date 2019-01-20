@@ -120,17 +120,27 @@ three_words_in_sep_lines_test("-l '^bb'", $expected);
 $expected = "";
 three_words_all_modes_test("-l 'something_not_possible_to_match'", $expected);
 
+############ Words cut from column tests ######################################
 # Three words in line, negative column separator
 $expected = "cc
 ";
 three_words_in_line_test("-c '-1'", $expected);
 
+# Three words in two lines, negative column separator for two columns
+$expected = "aa cc
+dd ff
+ 
+";# FIXME: whitespace is at the end of last line
+three_words_in_two_lines_test("-c '1, -1'", $expected);
+
+# Three words in two lines, positive column separator - result same as above two columns
+three_words_in_two_lines_test("-c '1, 3'", $expected);
+
+# Three words in two lines, negative column separator with one column print
 $expected = "cc
 ff
 
 ";
-
-# Three words in two lines, negative column separator with one column print
 three_words_in_two_lines_test("-c '-1' -n 1", $expected);
 
 # Empty inputs tests, nothing should be generated

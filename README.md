@@ -104,3 +104,10 @@ lrwxrwxrwx pepaste
 drwxrwxr-x tests
 
 ```
+
+## NOTE: if you only need 'no more than N words in line' you can use following perl snipper:
+
+```
+# Change '3' to desired number of words per line
+perl -ane 'BEGIN{$idx=0}; foreach $word (@F) {$idx++; print "$word"; if ($idx % 3 == 0) {print "\n"}else {print " "} }'
+```

@@ -105,7 +105,7 @@ drwxrwxr-x tests
 
 ```
 
-## NOTE: if you only need 'no more than N words in line' you can use following perl snipper:
+## PRO TIP: if you only need 'no more than N words in line' functionality you can use following perl snippet:
 
 ```
 # Change '3' to desired number of words per line

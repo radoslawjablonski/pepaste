@@ -1,7 +1,7 @@
 alias 'dk'='sudo docker'
 alias 'dkim'='sudo docker images'
 alias 'dkps'='sudo docker ps -a'
-alias 'dkls'="sudo docker images|pepaste -c '1,2' -s ':'"
+alias 'dkls'='sudo docker images|perl -ane '\''$"=":";print "@F[0,1]\n"'\'''
 alias 'dkrm_all_running'='sudo docker rm -f `sudo docker ps|omit-header|pepaste -c 1`'
 alias 'dkrm_empty_im'='sudo docker images|perl -ane '\''print "$F[2] " if $F[0] eq "<none>"'\''|xargs sudo docker rmi'
 
